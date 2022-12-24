@@ -1,7 +1,7 @@
 ---
 title: "Binary Search Tree"
 date: 2022-12-24T19:37:28+09:00
-draft: true
+draft: false
 categories: ["자료구조"]
 summary: "이진 탐색 트리 구현"
 ---
