@@ -1,11 +1,11 @@
 ---
-categories: ["자료구조"]
 title: "Stack"
 date: 2022-12-24T16:44:00+09:00
+categories: ["자료구조"]
 summary: "LinkedList로 Stack 구현하기"
 ---
 * LIFO(Last In First Out): 마지막에 입력한 데이터가 먼저 출력된다.
-* 트리 순회, 그래프 탐색, 회문(Palindrome) 구하기, 함수 콜 스택 등에 사용된다.
+* 트리 순회, 그래프 탐색, 함수 콜 스택 등에 사용된다.
 * LinkedList를 사용해 구현했다.
 
 ### Node
