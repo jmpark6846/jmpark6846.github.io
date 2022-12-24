@@ -1,0 +1,4 @@
+baseURL = 'http://jmpark6846.github.io/'
+languageCode = 'en-us'
+title = '준모의 개발 노트'
+theme = 'ananke'
