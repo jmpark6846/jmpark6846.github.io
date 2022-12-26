@@ -2,8 +2,9 @@
 title: "Binary Search Tree"
 date: 2022-12-24T19:37:28+09:00
 draft: false
-categories: ["자료구조"]
+tags: ["자료구조"]
 summary: "이진 탐색 트리 구현"
+isCJKLanguage: true
 ---
 * 이진 트리로서 각 노드가 다음과 같은 조건을 만족한다.   
   -> 각 노드의 키 값이 왼쪽 서브트리에 있는 노드들의 키값들 보다 크고, 오른쪽 서브트리에 있는 노드들의 키값들보다 작다.  
