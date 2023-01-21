@@ -7,7 +7,7 @@ tags: ["Spring", "테스트"]
 isCJKLanguage: true
 ---
 
-# 
+# web 
 
 
 * WebMvcTest로 POST endpoint에 대한 테스트 작성 후 실행하자 별다른 문제가 없었음에도 201이 아닌 403 발생
