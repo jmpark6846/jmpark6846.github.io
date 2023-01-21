@@ -132,6 +132,16 @@ Activation 메소드가 끝나면 UIKit은 화면에 윈도우들을 보여준�
 
 
 
+### 별첨1: 뷰 컨트롤러에 뷰 관련 알림 메소드
+앱 라이프사이클과 비슷하게 뷰 컨트롤러에 뷰 관련 알림 메소드가 있다. 뷰가 보여지는 상태(visibility)가 달라지면 호출된다.  
+'will' 메소드에서 작업을 실행하면 'did'메소드에서 종료시키는 식으로 작업한다.  
+* viewWillAppear
+* viewDidAppear
+* viewWillDisappear
+* viewDidDisappear
+
+
+
 ### 참고
 
 1. [Managing your app’s life cycle](https://developer.apple.com/documentation/uikit/app_and_environment/managing_your_app_s_life_cycle)
