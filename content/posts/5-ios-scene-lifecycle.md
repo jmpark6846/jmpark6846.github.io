@@ -1,9 +1,11 @@
 ---
 title: "앱의 라이프사이클(번역)"
+summary: "앱의 라이프사이클과 관련된 문서 번역 및 정리했다."
 date: 2023-01-20T22:23:15+09:00
 draft: false
 tags: ["ios", "app"]
 ---
+
 
 ### 앱의 상태
 * foreground: 사용자와 상호작용. CPU 같은 시스템 자원들에 대한 권한이 더 높다.
@@ -56,8 +58,9 @@ UI구성하고 초기 작업들 실행하자.
 
 
   
-### viewWillAppear: 인터페이스에 마지막 수정
-SceneDelegate 메소드가 아닌 view controller 의 이벤트 메소드. Activation 메소드가 끝나면 UIKit은 화면에 윈도우들을 보여준다. 또한 모든 뷰컨트롤러에게 뷰가 곧 나타날 것(appear)임을 알려준다.
+### viewWillAppear 
+SceneDelegate 메소드가 아닌 view controller 의 이벤트 메소드.
+Activation 메소드가 끝나면 UIKit은 화면에 윈도우들을 보여준다. 또한 모든 뷰컨트롤러에게 뷰가 곧 나타날 것(appear)임을 알려준다.
 * UI 에니메이션 시작하기
 * 미디어 재생하기 (자동재생일 경우)
 * 게임의 그래픽 보여주기 
@@ -67,7 +70,6 @@ SceneDelegate 메소드가 아닌 view controller 의 이벤트 메소드. Activ
 
 
 ## Background 진입
-
 앱은 여러가지 이유로 백그라운드 상태가 된다.  
 * 사용자가 foreground 앱을 종료시킬때 UIKit은 앱을 background로 이동시켰다가 나중에 suspend 시킨다.
 * 시스템은 앱 시작 시 바로 background state로 시작할수도 있다.
