@@ -1,8 +1,8 @@
 ---
 title: "앱의 라이프사이클(번역)"
-summary: "앱의 라이프사이클과 관련된 문서 번역 및 정리했다."
 date: 2023-01-20T22:23:15+09:00
 draft: false
+summary: "앱의 라이프사이클과 관련된 문서 번역 및 정리했다."
 tags: ["ios", "app"]
 ---
 
@@ -133,13 +133,13 @@ Activation 메소드가 끝나면 UIKit은 화면에 윈도우들을 보여준�
 
 
 ### 별첨1: 뷰 컨트롤러에 뷰 관련 알림 메소드
-앱 라이프사이클과 비슷하게 뷰 컨트롤러에 뷰 관련 알림 메소드가 있다. 뷰가 보여지는 상태(visibility)가 달라지면 호출된다.  
-'will' 메소드에서 작업을 실행하면 'did'메소드에서 종료시키는 식으로 작업한다.  
+앱 라이프사이클과 비슷하게 뷰 컨트롤러에 뷰 관련 알림 메소드가 있다. 뷰가 처음 로드 될때 불리거나 뷰가 보여지는 상태(visibility)가 달라지면 호출된다.  
+'will' 메소드에서 작업을 실행하면 같은 이름의 'did'메소드에서 종료시키는 식으로 작업한다.  
+* viewDidLoad
 * viewWillAppear
 * viewDidAppear
 * viewWillDisappear
 * viewDidDisappear
-
 
 
 ### 참고

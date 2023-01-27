@@ -1,4 +1,4 @@
 baseURL = 'https://jmpark6846.github.io/'
-languageCode = 'en-us'
-title = '준모의 개발 노트'
+languageCode = 'ko-kr'
+title = '준모의 개발노트'
 theme = 'noteworthy'

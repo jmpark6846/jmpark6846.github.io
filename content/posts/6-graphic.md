@@ -16,7 +16,7 @@ Quartz 쿼츠는 iOS, Mac 운영체제에서 사용하는 그래픽 엔진이다
 * `draw(rect:)` 메소드는 뷰가 화면에 보일때와 그 내용이 업데이트가 필요할때 호출된다.
 * 구현한 `draw(rect:)` 메소드가 호출되기 전에, 뷰 객체는 자동으로 필요한 환경을 구성한다. 이때 뷰 객체는 현재 환경에 맞는 그래픽 컨텍스트를 생성한다.
 
-아래는 컨텍스트를 이용해 원을 그리는 코드이다.
+아래는 컨텍스트를 이용해 테두리만 있는 원을 그리는 코드이다.
 ```swift
 override func draw(_ rect: CGRect) {
     guard let context = UIGraphicsGetCurrentContext() else { return }
@@ -36,6 +36,8 @@ override func draw(_ rect: CGRect) {
 코어 애니메이션은 뷰가 아닌 레이어를 사용해서 그림을 그린다. 레이어는 뷰를 직접 그리지 않고, 현재의 뷰의 인터페이스를 가져와서 비트맵 형태로 관리만 한다. 그럼 이 비트맵 정보를 하드웨어가 그린다. 그렇기 때문에 메인스레드에서 하는 뷰의 그리기 작업보다 훨씬 빠른 것이다.  
 
 레이어를 그리면 실제 레이어의 구조를 그대로 가져와서 Presentation 레이어를 만들고 실제로는 Presentation 레이어를 화면에 보여준다. 따라서 에니메이션의 current value를 얻고 싶으면 presentation 레이어를 참고해야한다.  
+
+실제 모양과 관련된 값을 변형하는 것이 아닌, 그것의 presentation인 레이어의 값을 변형하는 것이 에니메이션의 핵심이다. 따라서 에니메이션이 끝나면 원래 값으로 다시 그리기 때문에 에니메이션이 끝난 후 그 모습을 유지하고 싶으면 에니메이션 시작 후 직접 값을 변형해주어야 한다.
 
 원형프로그래스바를 만들기 위해 뷰의 레이어에 서브레이어를 추가하는 코드이다.  
 
@@ -81,7 +83,7 @@ progressBarLayer.add(animation, forKey: "strokeStart")
 ```
 
 
-애니메이션이 시작하거나 끝났을때 이벤트를 처리하고 싶다면 CAAnimationDelegate를 사용할 수 있다.
+애니메이션이 시작하거나 끝났을때 이벤트를 처리하고 싶다면 CAAnimationDelegate를 사용할 수 있다. 위에 언급한 것처럼 에니메이션이 끝난 후 모습을 유지하기 위해 프로그래스바의 시작 위치 값을 에니메이션이 끝난 후의 값인 1로 변경해주었다.
 
 ```swift
 extension CircularPrograssBar: CAAnimationDelegate {
