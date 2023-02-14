@@ -147,8 +147,8 @@ let center = CGPoint(x: view.frame.midX, y: view.frame.midY)
 
 layer.path = path.cgPath
 layer.position = center
-let progressBar = UIView()
 
+let progressBar = UIView()
 progressBar.layer.addSublayer(layer)
 view.addSubview(progressBar)
 
