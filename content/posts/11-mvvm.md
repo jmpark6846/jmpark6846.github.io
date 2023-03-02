@@ -35,7 +35,7 @@ MVC의 경우 모델은 데이터를 나타내는 역할을 말한다. 이때 �
   
   
   
-  
+
 ## MVVM
 
 ![mvvm](/image/mvvm.png)
