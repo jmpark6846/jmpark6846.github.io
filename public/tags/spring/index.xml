@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Spring on 준모의 개발노트</title>
+    <link>https://jmpark6846.github.io/tags/spring/</link>
+    <description>Recent content in Spring on 준모의 개발노트</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ko-kr</language>
+    <lastBuildDate>Mon, 26 Dec 2022 20:20:26 +0900</lastBuildDate><atom:link href="https://jmpark6846.github.io/tags/spring/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Spring Security와 @WebMvcTest 사용시 403 에러 발생</title>
+      <link>https://jmpark6846.github.io/posts/4-webmvctest/</link>
+      <pubDate>Mon, 26 Dec 2022 20:20:26 +0900</pubDate>
+      
+      <guid>https://jmpark6846.github.io/posts/4-webmvctest/</guid>
+      <description>ContextConfiguration으로 설정을 매뉴얼하게 불러오기</description>
+    </item>
+    
+  </channel>
+</rss>
