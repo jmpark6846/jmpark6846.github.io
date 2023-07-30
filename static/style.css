@@ -1,3 +1,11 @@
 #content img {
 	max-width: 600px;
 }
+
+h3{
+	margin-top: 1.4em;
+}
+
+ul, ol{
+	margin: 0.75em 0;
+}
