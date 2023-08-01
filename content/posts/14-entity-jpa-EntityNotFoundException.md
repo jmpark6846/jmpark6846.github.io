@@ -1,7 +1,7 @@
 ---
 title: "[JPA]엔티티 조회 시 존재하지 않을때 예외사항 처리"
 date: 2023-07-30T09:59:07+09:00
-draft: false
+draft: true
 summary: "existsById()로 EntityNotFoundException 처리하기"
 tags: ["java", "jpa"]
 
