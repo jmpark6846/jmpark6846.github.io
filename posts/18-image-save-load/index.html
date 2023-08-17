@@ -1,0 +1,116 @@
+<!doctype html><html lang=ko-kr><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1"><meta name=format-detection content="telephone=no"><title>이미지를 파일로 저장/불러오기 | 준모의 개발노트</title><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#ff3db4><meta name=theme-color content="#ffffff"><link rel=stylesheet href=https://jmpark6846.github.io/css/main.min.e34415025514319010e741089e6920454053855755ba465f66943ad102d2cb08.css></head><body><nav><header><div class=site-title><a href=/>준모의 개발노트</a></div></header><div class=nav-menu><a class="color-link nav-link" href=https://jmpark6846.github.io/index.xml target=_blank rel=noopener type=application/rss+xml>RSS</a></div><footer class=footer><div class=social-icons></div><p><a href=https://github.com/kimcc/hugo-theme-noteworthy target=_blank rel=noopener>Noteworthy theme</a></p><p><a href=https://gohugo.io target=_blank rel=noopener>Built with Hugo</a></p><script src=https://jmpark6846.github.io/js/main.min.a7205ef73b078c8daed6fe1b0826e8ba229ffabbb69d299d9446cf41f2c7d8aa.js integrity="sha256-pyBe9zsHjI2u1v4bCCbouiKf+ru2nSmdlEbPQfLH2Ko=" crossorigin=anonymous></script></footer></nav><div id=content class=content-container><h1 class=post-title>이미지를 파일로 저장/불러오기</h1><time>August 16, 2023</time><div><p><p>로컬에서 이미지를 불러와 앱 내 파일로 저장하고 불러와 보자.
+이런 작업을 해줄 역할을 ImageManager라는 역할을 만들자. 실제 사용은 전역 객체를 사용하도록 shared를 추가해주자.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ImageManager</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>let</span> shared = ImageManager()
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>파일을 저장하기 위해서는 우선 저장 위치를 나타내는 URL을 가지고 있어야 한다.
+파일이름은 &ldquo;*.jpeg&rdquo; 형태로 정한다. 파일이름은 중요하지 않아서 아래와 같이 무작위 스트링을 얻어왔다.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>let</span> filename = <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>\(</span>UUID<span style=color:#e6db74>()</span>.uuidString<span style=color:#e6db74>)</span><span style=color:#e6db74>.jpeg&#34;</span>
+</span></span></code></pre></div><p>파일이름을 받아 저장할 위치를 URL 타입으로 리턴하는 메소드를 만들었다.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>url</span>(filename: String) -&gt; URL?{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> directory = FileManager.<span style=color:#66d9ef>default</span>.urls(<span style=color:#66d9ef>for</span>: .documentDirectory, <span style=color:#66d9ef>in</span>: .userDomainMask).first <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span> }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> directory.appendingPathComponent(filename)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>iOS앱은 앱 자신의 파일과 폴더에만 접근할 수 있다. 앱 마다 각자의 다큐먼트 폴더를 갖고 있는데 여기에 앱에서 필요한 파일을 쓰거나 불러올 수 있다.<br>다큐먼트 주소를 directory에 저장한 다음 파일이름을 붙여서 원하는 주소를 만들었다.</p><p>그럼 이제 이미지를 파일로 저장해보자.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>saveImage</span>(filename: String, image: UIImage, completion: @escaping (Bool) -&gt; Void ) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> fileURL = ImageManager.shared.url(filename: filename) <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> FileManager.<span style=color:#66d9ef>default</span>.fileExists(atPath: fileURL.path) {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>do</span>{
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>try</span> FileManager.<span style=color:#66d9ef>default</span>.removeItem(at: fileURL)
+</span></span><span style=display:flex><span>        }<span style=color:#66d9ef>catch</span> {
+</span></span><span style=display:flex><span>            print(error)
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> data = image.jpegData(compressionQuality: <span style=color:#ae81ff>1</span>) <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>do</span>{
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> data.write(to: fileURL)
+</span></span><span style=display:flex><span>        completion(<span style=color:#66d9ef>true</span>)
+</span></span><span style=display:flex><span>    }<span style=color:#66d9ef>catch</span>{
+</span></span><span style=display:flex><span>        print(error)
+</span></span><span style=display:flex><span>        completion(<span style=color:#66d9ef>false</span>)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>파일을 저장하기전에 만약 해당 주소에 이미 파일이 있는 경우 파일을 제거한다. 즉 일종의 덮어쓰기인 셈이다.<br>메모리에 jpeg 포맷의 데이터로 만든다음 그걸 해당 주소에 쓰는(write) 방법이다. 생각보다 간단하다.</p><p>이번엔 이 파일을 <code>UIImage</code>로 불러와 보자.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>loadImage</span>(filename: String) -&gt; UIImage? {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> url = ImageManager.shared.url(filename: filename) <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span> }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> UIImage(contentsOfFile: url.path)
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>마찬가지로 주소를 얻어오는데, 이 주소를 UIImage에 넘겨주기만 하면 알아서 데이터를 읽어온다.</p><p>위에서 봤던 삭제 기능도 따로 메소드로 만들어주었다.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>deleteImage</span>(filename: String) {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> url = ImageManager.shared.url(filename: filename) <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>do</span>{
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> FileManager.<span style=color:#66d9ef>default</span>.removeItem(at: url)
+</span></span><span style=display:flex><span>    }<span style=color:#66d9ef>catch</span> {
+</span></span><span style=display:flex><span>        print(error)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>아래는 최종 코드이다. 이전 글에서 썸네일을 만드는데 사용했던 이미지 리사이징 메소드도 추가해줬다.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ImageManager</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>let</span> shared = ImageManager()
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>let</span> originalSize = CGSize(width: UIScreen.main.bounds.width <span style=color:#f92672>*</span> UIScreen.main.scale, height: UIScreen.main.bounds.height <span style=color:#f92672>*</span> UIScreen.main.scale)
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>url</span>(filename: String) -&gt; URL?{
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> directory = FileManager.<span style=color:#66d9ef>default</span>.urls(<span style=color:#66d9ef>for</span>: .documentDirectory, <span style=color:#66d9ef>in</span>: .userDomainMask).first <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span> }
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> directory.appendingPathComponent(filename)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>resizedImage</span>(at url: URL, <span style=color:#66d9ef>for</span> size: CGSize) -&gt; UIImage? {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> options: [CFString: Any] = [
+</span></span><span style=display:flex><span>            kCGImageSourceCreateThumbnailFromImageIfAbsent: <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>            kCGImageSourceCreateThumbnailWithTransform: <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>            kCGImageSourceShouldCacheImmediately: <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>            kCGImageSourceThumbnailMaxPixelSize: max(size.width, size.height)
+</span></span><span style=display:flex><span>        ]
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> imageSource = CGImageSourceCreateWithURL(url <span style=color:#66d9ef>as</span> NSURL, <span style=color:#66d9ef>nil</span>),
+</span></span><span style=display:flex><span>              <span style=color:#66d9ef>let</span> image = CGImageSourceCreateThumbnailAtIndex(imageSource, <span style=color:#ae81ff>0</span>, options <span style=color:#66d9ef>as</span> CFDictionary)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>else</span> {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> UIImage(cgImage: image)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>saveImage</span>(filename: String, image: UIImage, completion: @escaping (Bool) -&gt; Void ) {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> fileURL = ImageManager.shared.url(filename: filename) <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> }
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> FileManager.<span style=color:#66d9ef>default</span>.fileExists(atPath: fileURL.path) {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>do</span>{
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>try</span> FileManager.<span style=color:#66d9ef>default</span>.removeItem(at: fileURL)
+</span></span><span style=display:flex><span>            }<span style=color:#66d9ef>catch</span> {
+</span></span><span style=display:flex><span>                print(error)
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>return</span>
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> data = image.jpegData(compressionQuality: <span style=color:#ae81ff>1</span>) <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>do</span>{
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>try</span> data.write(to: fileURL)
+</span></span><span style=display:flex><span>            completion(<span style=color:#66d9ef>true</span>)
+</span></span><span style=display:flex><span>        }<span style=color:#66d9ef>catch</span>{
+</span></span><span style=display:flex><span>            print(error)
+</span></span><span style=display:flex><span>            completion(<span style=color:#66d9ef>false</span>)
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>loadImage</span>(filename: String) -&gt; UIImage? {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> url = ImageManager.shared.url(filename: filename) <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>nil</span> }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> UIImage(contentsOfFile: url.path)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>loadImage</span>(url: URL) -&gt; UIImage? {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> UIImage(contentsOfFile: url.path)
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>deleteImage</span>(filename: String) {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>guard</span> <span style=color:#66d9ef>let</span> url = ImageManager.shared.url(filename: filename) <span style=color:#66d9ef>else</span> { <span style=color:#66d9ef>return</span> }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>do</span>{
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>try</span> FileManager.<span style=color:#66d9ef>default</span>.removeItem(at: url)
+</span></span><span style=display:flex><span>        }<span style=color:#66d9ef>catch</span> {
+</span></span><span style=display:flex><span>            print(error)
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></p></div><div class=page-footer><hr class=footer-divider><a class=tag href=/tags/ios>#ios</a>
+<a class=tag href=/tags/image>#image</a></div></div><footer class=footer-mobile><div class=social-icons></div><div class=footer-mobile-links><p><a href=https://github.com/kimcc/hugo-theme-noteworthy target=_blank rel=noopener>Noteworthy theme</a></p><span class=divider-bar>|</span><p><a href=https://gohugo.io target=_blank rel=noopener>Built with Hugo</a></p></div><script src=https://jmpark6846.github.io/js/main.min.a7205ef73b078c8daed6fe1b0826e8ba229ffabbb69d299d9446cf41f2c7d8aa.js integrity="sha256-pyBe9zsHjI2u1v4bCCbouiKf+ru2nSmdlEbPQfLH2Ko=" crossorigin=anonymous></script></footer></body></html>
